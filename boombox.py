@@ -43,9 +43,9 @@ class Boombox(object):
         self.logger.info('boombox logger instantiated')
 
 
-    def play(self, track):
+    def play(self, sound):
         '''returns mixer.Channel object that sound is playing on'''
-        self.logger.info('playing {}'.format(track))
+        self.logger.info('playing {}'.format(sound))
 
         return self.sounds[track].play(loops=-1)
 
