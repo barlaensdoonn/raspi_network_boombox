@@ -3,6 +3,7 @@
 # 11/24/17
 # updated: 11/25/17
 
+import yaml
 import logging
 import logging.config
 from pygame import mixer
