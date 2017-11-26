@@ -16,9 +16,9 @@ def initialize_logger():
         log_config = yaml.safe_load(log_conf)
 
     logging.config.dictConfig(log_config)
-    logger = logging.getLogger('boombox')
+    logger = logging.getLogger('main')
     logger.info('* * * * * * * * * * * * * * * * * * * *')
-    logger.info('boombox logger instantiated')
+    logger.info('main logger instantiated')
 
     return logger
 

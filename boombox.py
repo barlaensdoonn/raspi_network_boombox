@@ -4,6 +4,7 @@
 # updated: 11/25/17
 
 import logging
+import logging.config
 from pygame import mixer
 
 
@@ -27,27 +28,41 @@ class Boombox(object):
     }
 
     def __init__(self):
+        self._initialize_logger()
         self.mixer = mixer
         self.mixer.init(frequency=44100)
         self.sounds = {key: self.mixer.Sound(self.tracks[key]) for key in self.tracks.keys()}
 
+    def _initialize_logger(self):
+        with open('log.yaml', 'r') as log_conf:
+            log_config = yaml.safe_load(log_conf)
+
+        logging.config.dictConfig(log_config)
+        self.logger = logging.getLogger('boombox')
+        self.logger.info('* * * * * * * * * * * * * * * * * * * *')
+        self.logger.info('boombox logger instantiated')
+
+
     def play(self, track):
         '''returns mixer.Channel object that sound is playing on'''
-        logging.info('playing {}'.format(track))
+        self.logger.info('playing {}'.format(track))
 
         return self.sounds[track].play(loops=-1)
 
     def set_volume(self, channel, volume):
         '''volume should be between 0.0 - 1.0'''
+        self.logger.info('setting volume on {} to {}'.format(channel, volume))
         channel.set_volume(volume)
 
     def stop(self, channel, ms):
         '''fades out audio over input milliseconds and releases channel back to the mixer'''
-        logging.info('stopping playback on channel {}'.format(channel))
+        self.logger.info('stopping playback on {}'.format(channel))
         channel.fadeout(ms)
 
     def pause(self, channel):
+        self.logger.info('pausing playback on {}'.format(channel))
         channel.pause()
 
     def unpause(channel):
+        self.logger.info('resuming playback on {}'.format(channel))
         channel.unpause()
