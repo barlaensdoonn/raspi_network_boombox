@@ -32,7 +32,7 @@ class Boombox(object):
         self._initialize_logger()
         self.mixer = mixer
         self.mixer.init(frequency=44100)
-        self.sounds = {key: self.mixer.Sound(self.tracks[key]) for key in self.tracks.keys()}
+        self.sounds = {key: self.mixer.Sound(self.tracks[key]) for key in self.tracks.keys()}  # dict to hold mixer.Sounds in same format as tracks dict
         self.logger.debug('pygame mixer and sounds dict initiated')
 
     def _initialize_logger(self):
@@ -44,16 +44,18 @@ class Boombox(object):
         self.logger.info('boombox logger instantiated')
 
 
-    def play(self, sound):
+    def play(self, sound, volume):
         '''returns mixer.Channel object that sound is playing on'''
-        self.logger.info('playing {}'.format(sound))
+        self.logger.info('playing sound "{}" at volume {}'.format(sound, volume))
+        swnd = self.sounds[sound]
+        self.set_volume(sound, volume)
 
-        return self.sounds[track].play(loops=-1)
+        return swnd.play(loops=-1)
 
-    def set_volume(self, channel, volume):
+    def set_volume(self, sound, volume):
         '''volume should be between 0.0 - 1.0'''
-        self.logger.info('setting volume on {} to {}'.format(channel, volume))
-        channel.set_volume(volume)
+        self.logger.info('setting volume of sound "{}" to {}'.format(sound, volume))
+        self.sounds[sound].set_volume(volume)
 
     def stop(self, channel, ms):
         '''fades out audio over input milliseconds and releases channel back to the mixer'''
