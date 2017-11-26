@@ -12,7 +12,7 @@ from Adafruit_MAX9744 import MAX9744
 
 
 def initialize_logger():
-    with open(log.yaml, 'r') as log_conf:
+    with open('log.yaml', 'r') as log_conf:
         log_config = yaml.safe_load(log_conf)
 
     logging.config.dictConfig(log_config)
