@@ -56,6 +56,7 @@ if __name__ == '__main__':
     receive = initialize_receive(bmbx)
 
     try:
+        logger.info('receive server entering serve_forever() loop')
         receive.server.serve_forever()
     except KeyboardInterrupt:
         receive.server.shutdown()
