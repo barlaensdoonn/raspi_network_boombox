@@ -3,6 +3,7 @@
 # 11/24/17
 # updated: 11/25/17
 
+import sys
 import yaml
 import logging
 import logging.config
@@ -25,8 +26,13 @@ def initialize_logger():
 
 def initialize_amp(volume):
     amp = MAX9744()
-    amp.set_volume(volume)
-    logger.info('amp initialized @ volume {}'.format(volume))
+
+    try:
+        amp.set_volume(volume)
+        logger.info('amp initialized @ volume {}'.format(volume))
+    except OSError:
+        logger.error('OSError encountered when trying to set amp volume, amp likely not connected, exiting...')
+        sys.exit()
 
     return amp
 
