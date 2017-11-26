@@ -35,10 +35,12 @@ class Boombox(object):
         return self.sounds[track].play(loops=-1)
 
     def set_volume(channel, volume):
+        '''volume should be between 0.0 - 1.0'''
         channel.set_volume(volume)
 
-    def stop(channel):
-        channel.fadeout(1000)
+    def stop(channel, ms):
+        '''fades out audio over input milliseconds and releases channel back to the mixer'''
+        channel.fadeout(ms)
 
     def pause(channel):
         channel.pause()
