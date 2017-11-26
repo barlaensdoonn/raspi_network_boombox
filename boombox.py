@@ -3,6 +3,7 @@
 # 11/24/17
 # updated: 11/25/17
 
+import logging
 from pygame import mixer
 
 
@@ -28,24 +29,24 @@ class Boombox(object):
     def __init__(self):
         self.mixer = mixer
         self.mixer.init(frequency=44100)
-        self.sounds = {key: self.mixer.Sound(self.tracks[key]) for key in selftracks.keys()}
+        self.sounds = {key: self.mixer.Sound(self.tracks[key]) for key in self.tracks.keys()}
 
-    def play(track):
+    def play(self, track):
         '''returns mixer.Channel object that sound is playing on'''
         logging.info('playing {}'.format(track))
 
         return self.sounds[track].play(loops=-1)
 
-    def set_volume(channel, volume):
+    def set_volume(self, channel, volume):
         '''volume should be between 0.0 - 1.0'''
         channel.set_volume(volume)
 
-    def stop(channel, ms):
+    def stop(self, channel, ms):
         '''fades out audio over input milliseconds and releases channel back to the mixer'''
         logging.info('stopping playback on channel {}'.format(channel))
         channel.fadeout(ms)
 
-    def pause(channel):
+    def pause(self, channel):
         channel.pause()
 
     def unpause(channel):

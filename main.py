@@ -26,12 +26,12 @@ def initialize_logger():
 def initialize_amp(volume):
     amp = MAX9744()
     amp.set_volume(volume)
-    logger.info('amp initialized @ volume {}'.format(vol))
+    logger.info('amp initialized @ volume {}'.format(volume))
 
     return amp
 
 def initialize_boombox():
-    boom = boombox.Booombox()
+    boom = boombox.Boombox()
     logger.info('boombox initialized')
 
     return boom
@@ -42,7 +42,11 @@ if __name__ == '__main__':
     amp = initialize_amp(40)
     bmbx = initialize_boombox()
 
+    monti = bmbx.play('monteverdi')
+    listen = True
+
     try:
-        monti = bmbx.play('monteverdi')
+        while listen:
+            pass
     except KeyboardInterrupt:
         bmbx.stop(monti, 1000)
