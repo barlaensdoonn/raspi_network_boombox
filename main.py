@@ -4,11 +4,11 @@
 # updated: 11/25/17
 
 import yaml
-import receive
-import boombox
 import logging
 import logging.config
 from Adafruit_MAX9744 import MAX9744
+from receive import ReceiveAndPlay
+from boombox import Boombox
 
 
 def initialize_logger():
@@ -31,24 +31,26 @@ def initialize_amp(volume):
     return amp
 
 def initialize_boombox():
-    boom = boombox.Boombox()
+    boom = Boombox()
     logger.info('boombox initialized')
 
     return boom
+
+def initialize_receive(bmbx):
+    rcv = ReceiveAndPlay(bmbx)
+    logger.info('receive initialized')
+
+    return rcv
 
 
 if __name__ == '__main__':
     logger = initialize_logger()
     amp = initialize_amp(40)
     bmbx = initialize_boombox()
-
-    monti = bmbx.play('monteverdi')
-    listen = True
+    receive = initialize_receive(bmbx)
 
     try:
-        while listen:
-            pass
+        receive.server.serve_forever()
     except KeyboardInterrupt:
-        bmbx.stop(monti, 1000)
-        while bmbx.mixer.get_busy():
-            pass
+        receive.server.shutdown()
+        logger.info('...user exit received, shutting down server...')
