@@ -23,9 +23,6 @@ sudo apt-get install python3-pygame
 #### *Adafruit_MAX9744 library (if using)*
 [Adafruit's library](https://github.com/adafruit/Adafruit_Python_MAX9744)
 
-#### *Adafruit_MAX9744 library wrapper (if using)*
-[wrapper for above library](https://github.com/barlaensdoonn/ampli)
-
 #### *set system volume to 97% (0db):*
 ```
 amixer set PCM -- 97%
