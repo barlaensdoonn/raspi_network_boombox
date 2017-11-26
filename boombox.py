@@ -39,7 +39,6 @@ class Boombox(object):
 
         logging.config.dictConfig(log_config)
         self.logger = logging.getLogger('boombox')
-        self.logger.info('* * * * * * * * * * * * * * * * * * * *')
         self.logger.info('boombox logger instantiated')
 
 
