@@ -4,11 +4,11 @@
 # updated: 11/25/17
 
 import yaml
-import ampli
 import receive
 import boombox
 import logging
 import logging.config
+from Adafruit_MAX9744 import MAX9744
 
 
 def initialize_logger():
@@ -23,8 +23,9 @@ def initialize_logger():
     return logger
 
 
-def initialize_amp(vol):
-    amp = ampli.Ampli(volume=vol)
+def initialize_amp(volume):
+    amp = MAX9744()
+    amp.set_volume(volume)
     logger.info('amp initialized @ volume {}'.format(vol))
 
     return amp
