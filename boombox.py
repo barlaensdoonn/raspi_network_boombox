@@ -32,6 +32,7 @@ class Boombox(object):
         self.mixer = mixer
         self.mixer.init(frequency=44100)
         self.sounds = {key: self.mixer.Sound(self.tracks[key]) for key in self.tracks.keys()}
+        self.logger.debug('pygame mixer and sounds dict initiated')
 
     def _initialize_logger(self):
         with open('log.yaml', 'r') as log_conf:
