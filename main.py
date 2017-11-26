@@ -50,3 +50,5 @@ if __name__ == '__main__':
             pass
     except KeyboardInterrupt:
         bmbx.stop(monti, 1000)
+        while bmbx.mixer.get_busy():
+            pass
