@@ -19,7 +19,7 @@ def context_client(hostport, state):
 
 
 if __name__ == '__main__':
-    hostport = ('192.168.1.112', 9999)
+    hostport = ('swnd.local', 9999)
     track = 'monteverdi'
     volume = '1.0'
 

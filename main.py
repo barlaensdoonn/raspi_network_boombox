@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # mind@large raspi audio component
 # 11/24/17
-# updated: 11/25/17
+# updated: 11/26/17
 
 import yaml
 import logging
