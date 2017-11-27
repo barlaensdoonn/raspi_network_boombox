@@ -37,7 +37,7 @@ class TCPHandler(socketserver.BaseRequestHandler):
 
         if msg and msg['track'] in self.server.bmbx.sounds.keys():
             self.server.logger.info('asking boombox to play "{}" at volume {}'.format(msg['track'], msg['volume']))
-            self.server.bmbx.play(self.track, self.volume)
+            self.server.bmbx.play(msg['track'], msg['volume'])
         else:
             self.server.logger.warning("invalid command '{}' received, ignoring...".format(self.decoded))
 
