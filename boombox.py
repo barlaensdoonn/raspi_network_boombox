@@ -43,22 +43,30 @@ class Boombox(object):
         self.logger = logging.getLogger('boombox')
         self.logger.info('boombox logger instantiated')
 
-
-    def play(self, sound, volume):
-        '''returns mixer.Channel object that sound is playing on'''
-        self.logger.info('playing sound "{}" at volume {}'.format(sound, volume))
-        swnd = self.sounds[sound]
-        self.set_volume(sound, volume)
-
-        return swnd.play(loops=-1)
-
-    def set_volume(self, sound, volume):
+    def _set_volume(self, sound, volume):
         '''volume should be between 0.0 - 1.0'''
+
         self.logger.info('setting volume of sound "{}" to {}'.format(sound, volume))
         self.sounds[sound].set_volume(volume)
 
+    def _is_playing(self, sound_object):
+        '''pygame method that returns # of channels sound is playing on'''
+
+        return sound_object.get_num_channels()
+
+    def play(self, sound, volume):
+        '''set volume of the sound and play it if not playing already'''
+
+        swnd = self.sounds[sound]
+        self._set_volume(sound, volume)
+
+        if not self._is_playing(swnd):
+            self.logger.info('playing sound "{}"'.format(sound))
+            swnd.play(loops=-1)
+
     def stop(self, sound):
         '''fades out sound over specified milliseconds'''
+
         self.logger.info('stopping playback of {}'.format(sound))
         self.sounds[sound].fadeout(1000)
 
