@@ -10,12 +10,12 @@ def encode_msg(track, volume):
     return '{}/{}\r\n'.format(track, volume).encode()
 
 
-def context_client(hostport, state):
+def context_client(hostport, msg):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client:
         client.connect(hostport)
-        client.sendall(state)
+        client.sendall(msg)
 
-    return state.decode().strip()
+    return msg.decode().strip()
 
 
 if __name__ == '__main__':
