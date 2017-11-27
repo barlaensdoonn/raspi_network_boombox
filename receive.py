@@ -19,13 +19,14 @@ class TCPHandler(socketserver.BaseRequestHandler):
 
     def parse_msg(self):
         '''self.request is the TCP socket connected to the client'''
-        data = self.request.recv(1024)
-        decoded = data.decode().strip()
-        self.server.logger.info("{} wrote: {}".format(self.client_address[0], decoded))
 
-        self.msg = decoded.split('/')
-        self.track = self.msg[0]
-        self.volume = float(self.msg[1])
+        data = self.request.recv(1024)
+        self.decoded = data.decode().strip()
+        self.server.logger.info("{} wrote: {}".format(self.client_address[0], self.decoded))
+
+        msg = self.decoded.split('/')
+        self.track = msg[0]
+        self.volume = float(msg[1])
 
     def handle(self):
         self.server.logger.debug('client {} connected'.format(self.client_address[0]))
@@ -35,10 +36,11 @@ class TCPHandler(socketserver.BaseRequestHandler):
             self.server.logger.info('asking boombox to play "{}" at volume {}'.format(self.track, self.volume))
             self.server.bmbx.play(self.track, self.volume)
         else:
-            self.server.logger.warning("invalid command '{}' received, ignoring...".format(self.msg))
+            self.server.logger.warning("invalid command '{}', ignoring...".format(self.decoded))
 
     def finish(self):
         '''finish method is always called by the base handler after handle method has completed'''
+
         self.server.logger.debug('closed connection from {}'.format(self.client_address[0]))
 
 
