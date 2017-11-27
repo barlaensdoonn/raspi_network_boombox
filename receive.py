@@ -24,8 +24,8 @@ class TCPHandler(socketserver.BaseRequestHandler):
         self.server.logger.info("{} wrote: {}".format(self.client_address[0], decoded))
 
         self.msg = decoded.split('/')
-        self.track = msg[0]
-        self.volume = float(msg[1])
+        self.track = self.msg[0]
+        self.volume = float(self.msg[1])
 
     def handle(self):
         self.server.logger.debug('client {} connected'.format(self.client_address[0]))
