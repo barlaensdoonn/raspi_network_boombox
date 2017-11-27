@@ -31,16 +31,18 @@ def initialize_amp(volume):
         amp.set_volume(volume)
         logger.info('amp initialized @ volume {}'.format(volume))
     except OSError:
-        logger.error('OSError encountered when trying to set amp volume, amp likely not connected, exiting...')
-        sys.exit()
+        logger.error('OSError encountered when trying to set amp volume, likely not using Adafruit MAX9744 amp')
+        amp = None
 
     return amp
+
 
 def initialize_boombox():
     boom = Boombox()
     logger.info('boombox initialized')
 
     return boom
+
 
 def initialize_receive(bmbx):
     rcv = ReceiveAndPlay(bmbx)
