@@ -59,7 +59,7 @@ class ReceiveAndPlay(object):
         self.logger.info('receive logger instantiated')
 
     def _initialize_server(self):
-        hostport = ('', 9999)
+        hostport = ('', 9999)  # '' stands for all available interfaces
         self.logger.info('initializing open server on port {}'.format(hostport[1]))
 
         self.server = socketserver.TCPServer(hostport, TCPHandler)
