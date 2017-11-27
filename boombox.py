@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # mind@large raspi audio component
 # 11/24/17
-# updated: 11/25/17
+# updated: 11/26/17
 
 import yaml
 import logging
@@ -57,10 +57,10 @@ class Boombox(object):
         self.logger.info('setting volume of sound "{}" to {}'.format(sound, volume))
         self.sounds[sound].set_volume(volume)
 
-    def stop(self, channel, ms):
-        '''fades out audio over input milliseconds and releases channel back to the mixer'''
-        self.logger.info('stopping playback on {}'.format(channel))
-        channel.fadeout(ms)
+    def stop(self, sound):
+        '''fades out sound over specified milliseconds'''
+        self.logger.info('stopping playback of {}'.format(sound))
+        self.sounds[sound].fadeout(1000)
 
     def pause(self, channel):
         self.logger.info('pausing playback on {}'.format(channel))
