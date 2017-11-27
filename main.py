@@ -61,5 +61,4 @@ if __name__ == '__main__':
         receive.server.serve_forever()
     except KeyboardInterrupt:
         receive.server.shutdown()
-        receive.server.close()
         logger.info('...user exit received, shutting down server...')
