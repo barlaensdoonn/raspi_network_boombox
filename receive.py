@@ -25,18 +25,21 @@ class TCPHandler(socketserver.BaseRequestHandler):
         self.server.logger.info("{} wrote: {}".format(self.client_address[0], self.decoded))
 
         msg = self.decoded.split('/')
-        self.track = msg[0]
-        self.volume = float(msg[1])
+
+        try:
+            return {'track': msg[0], 'volume': float(msg[1])}
+        except IndexError:
+            return None
 
     def handle(self):
         self.server.logger.debug('client {} connected'.format(self.client_address[0]))
-        self.parse_msg()
+        msg = self.parse_msg()
 
-        if self.track in self.server.bmbx.sounds.keys():
-            self.server.logger.info('asking boombox to play "{}" at volume {}'.format(self.track, self.volume))
+        if msg and msg['track'] in self.server.bmbx.sounds.keys():
+            self.server.logger.info('asking boombox to play "{}" at volume {}'.format(msg['track'], msg['volume']))
             self.server.bmbx.play(self.track, self.volume)
         else:
-            self.server.logger.warning("invalid command '{}', ignoring...".format(self.decoded))
+            self.server.logger.warning("invalid command '{}' received, ignoring...".format(self.decoded))
 
     def finish(self):
         '''finish method is always called by the base handler after handle method has completed'''
