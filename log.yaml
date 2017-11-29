@@ -19,7 +19,7 @@ handlers:
         class: logging.FileHandler
         level: INFO
         formatter: file
-        filename: '/home/pi/git_bucket/raspi_network_boombox/boombox.log'
+        filename: 'boombox.log'
 
 loggers:
     boombox:
