@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # mind@large raspi audio component
 # 11/24/17
-# updated: 11/26/17
+# updated: 11/29/17
 
 import yaml
 import logging
@@ -25,7 +25,7 @@ class Boombox(object):
     '''
 
     tracks = {
-        'monteverdi': '/home/pi/sound/Lagrime_damante_monteverdi_waved_16bit_PCM.wav'
+        'monteverdi': '../../lagrime_16bit_PCM_compressed_2_to_1.wav'
     }
 
     def __init__(self):
@@ -33,7 +33,7 @@ class Boombox(object):
         self.mixer = mixer
         self.mixer.init(frequency=44100)
         self.sounds = {key: self.mixer.Sound(self.tracks[key]) for key in self.tracks.keys()}  # dict to hold mixer.Sounds in same format as tracks dict
-        self.logger.debug('pygame mixer and sounds dict initiated')
+        self.logger.debug('pygame mixer and sounds dict initialized')
 
     def _initialize_logger(self):
         with open('log.yaml', 'r') as log_conf:
