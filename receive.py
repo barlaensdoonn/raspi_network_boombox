@@ -35,9 +35,14 @@ class UDPHandler(socketserver.BaseRequestHandler):
         except IndexError:
             return None
 
-        # example sending uppercase received msg back to sender
-        # socket = self.request[1]
-        # socket.sendto(data.upper(), self.client_address)
+    def reply(self):
+        '''
+        reply to the sender. since there is no connection in a UDP socket
+        the client address must be given explicitly in sendto().
+        '''
+
+        socket = self.request[1]
+        socket.sendto(self.decoded.upper().encode(), self.client_address)
 
     def handle(self):
         self.server.logger.debug('client {} connected'.format(self.client_address[0]))
