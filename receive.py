@@ -117,6 +117,6 @@ class ReceiveAndPlay(object):
         hostport = ('', 9999)  # '' stands for all available interfaces
         self.logger.info('initializing open server on port {}'.format(hostport[1]))
 
-        self.server = socketserver.TCPServer(hostport, TCPHandler)
+        self.server = socketserver.UDPServer(hostport, UDPHandler)
         self.server.logger = self.logger
         self.server.bmbx = self.bmbx
