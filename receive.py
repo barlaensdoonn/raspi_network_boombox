@@ -100,10 +100,12 @@ class TCPHandler(socketserver.BaseRequestHandler):
 
 class ReceiveAndPlay(object):
 
-    def __init__(self, bmbx):
-        self.bmbx = bmbx
+    def __init__(self, bmbx, socket_type='udp'):
+        '''server defaults to UDP. set socket_type="tcp" to use TCP sockets'''
+
         self._initialize_logger()
-        self._initialize_server()
+        self.bmbx = bmbx
+        self._initialize_server(socket_type.lower())
 
     def _initialize_logger(self):
         with open('log.yaml', 'r') as log_conf:
@@ -113,10 +115,10 @@ class ReceiveAndPlay(object):
         self.logger = logging.getLogger('receive')
         self.logger.info('receive logger instantiated')
 
-    def _initialize_server(self):
+    def _initialize_server(self, socket_type):
         hostport = ('', 9999)  # '' stands for all available interfaces
-        self.logger.info('initializing open server on port {}'.format(hostport[1]))
+        self.logger.info('initializing open {} server on port {}'.format(socket_type.upper(), hostport[1]))
 
-        self.server = socketserver.UDPServer(hostport, UDPHandler)
+        self.server = socketserver.UDPServer(hostport, UDPHandler) if socket_type is 'udp' else socketserver.TCPServer(hostport, TCPHandler)
         self.server.logger = self.logger
         self.server.bmbx = self.bmbx
