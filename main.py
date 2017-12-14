@@ -43,8 +43,8 @@ def initialize_boombox():
     return boom
 
 
-def initialize_receive(bmbx):
-    rcv = ReceiveAndPlay(bmbx)
+def initialize_receive(bmbx, socket_type='udp'):
+    rcv = ReceiveAndPlay(bmbx, socket_type)
     logger.info('receive initialized')
 
     return rcv
