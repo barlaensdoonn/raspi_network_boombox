@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # mind@large raspi audio component
 # 11/24/17
-# updated: 12/1/17
+# updated: 12/13/17
 
 import yaml
 import logging
@@ -103,22 +103,34 @@ class ReceiveAndPlay(object):
     def __init__(self, bmbx, socket_type='udp'):
         '''server defaults to UDP. set socket_type="tcp" to use TCP sockets'''
 
-        self._initialize_logger()
+        self.logger = self._initialize_logger()
         self.bmbx = bmbx
-        self._initialize_server(socket_type.lower())
+        self.socket_type = socket_type.lower()
+        self.server = self._initialize_server()
 
     def _initialize_logger(self):
         with open('log.yaml', 'r') as log_conf:
             log_config = yaml.safe_load(log_conf)
 
         logging.config.dictConfig(log_config)
-        self.logger = logging.getLogger('receive')
-        self.logger.info('receive logger instantiated')
+        logger = logging.getLogger('receive')
+        logger.info('receive logger instantiated')
 
-    def _initialize_server(self, socket_type):
+        return logger
+
+    def _initialize_server(self):
         hostport = ('', 9999)  # '' stands for all available interfaces
-        self.logger.info('initializing open {} server on port {}'.format(socket_type.upper(), hostport[1]))
+        self.logger.info('initializing open {socket_type} server on port {port}'.format(socket_type=socket_type.upper(), port=hostport[1]))
 
-        self.server = socketserver.UDPServer(hostport, UDPHandler) if socket_type is 'udp' else socketserver.TCPServer(hostport, TCPHandler)
-        self.server.logger = self.logger
-        self.server.bmbx = self.bmbx
+        if self.socket_type == 'udp':
+            server = socketserver.UDPServer(hostport, UDPHandler)
+        elif self.socket_type == 'tcp':
+            server = socketserver.TCPServer(hostport, TCPHandler)
+        else:
+            raise Exception("invalid socket type, server not initialized")
+            return None
+
+        server.logger = self.logger
+        server.bmbx = self.bmbx
+
+        return server
