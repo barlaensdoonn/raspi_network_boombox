@@ -120,7 +120,7 @@ class ReceiveAndPlay(object):
 
     def _initialize_server(self):
         hostport = ('', 9999)  # '' stands for all available interfaces
-        self.logger.info('initializing open {socket_type} server on port {port}'.format(socket_type=socket_type.upper(), port=hostport[1]))
+        self.logger.info('initializing open {socket_type} server on port {port}'.format(socket_type=self.socket_type.upper(), port=hostport[1]))
 
         if self.socket_type == 'udp':
             server = socketserver.UDPServer(hostport, UDPHandler)
