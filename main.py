@@ -54,7 +54,7 @@ if __name__ == '__main__':
     logger = initialize_logger()
     amp = initialize_amp(40)
     bmbx = initialize_boombox()
-    receive = initialize_receive(bmbx)
+    receive = initialize_receive(bmbx, socket_type='udp')
 
     try:
         logger.info('receive server entering serve_forever() loop')
