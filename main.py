@@ -6,7 +6,6 @@
 import yaml
 import logging
 import logging.config
-from Adafruit_MAX9744 import MAX9744
 from receive import ReceiveAndPlay
 from boombox import Boombox
 
@@ -25,13 +24,8 @@ def initialize_logger():
 
 def initialize_amp(volume):
     amp = MAX9744()
-
-    try:
-        amp.set_volume(volume)
-        logger.info('amp initialized @ volume {}'.format(volume))
-    except OSError:
-        logger.error('OSError encountered when trying to set amp volume, likely not using Adafruit MAX9744 amp')
-        amp = None
+    amp.set_volume(volume)
+    logger.info('amp initialized @ volume {}'.format(volume))
 
     return amp
 
@@ -52,7 +46,16 @@ def initialize_receive(bmbx, socket_type='udp'):
 
 if __name__ == '__main__':
     logger = initialize_logger()
-    amp = initialize_amp(40)
+
+    try:
+        from Adafruit_MAX9744 import MAX9744
+        amp = initialize_amp(40)
+    except ImportError:
+        logger.warning('Adafruit MAX9744 not installed, probably using a different amp')
+    except OSError:
+        logger.error('OSError encountered when trying to set amp volume')
+        logger.error("either MAX9744 amp is not connected, or library is installed but we're using a different amp")
+
     bmbx = initialize_boombox()
     receive = initialize_receive(bmbx, socket_type='udp')
 
