@@ -1,6 +1,9 @@
-boombox
+##boombox
+once the below dependencies are installed, clone the repo and run main.py. the script runs a server (UDP by default, although it's possible to change this by passing ```socket_type='tcp'``` when constructing the ReceiveAndPlay class) in a serve_forever loop listening for messages formatted as 'trackname/volume', where volume is a float between 0.0 - 1.0.
 
-dependencies:
+sound files should be placed in the sound/ within the repo's directory. you'll have to make the sound/ dir yourself as it is currently in the .gitignore.
+
+###dependencies:
 #### *pyyaml*
 ```
 sudo pip3 install pyyaml
@@ -22,6 +25,7 @@ sudo apt-get install python3-pygame
 
 #### *Adafruit_MAX9744 library (if using)*
 [Adafruit's library](https://github.com/adafruit/Adafruit_Python_MAX9744)
+
 
 #### *set system volume to 97% (0db):*
 ```
