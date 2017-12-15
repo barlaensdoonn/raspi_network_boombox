@@ -25,7 +25,7 @@ class Boombox(object):
     '''
 
     tracks = {
-        'monteverdi': '../../sound/lagrime_16bit_PCM_compressed_2_to_1.wav'
+        'monteverdi': 'sound/lagrime_16bit_PCM_compressed_2_to_1.wav'
     }
 
     def __init__(self):
