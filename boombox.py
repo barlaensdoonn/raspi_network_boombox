@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # mind@large raspi audio component
 # 11/24/17
-# updated: 11/29/17
+# updated: 12/22/17
 
 import yaml
 import logging
@@ -25,7 +25,10 @@ class Boombox(object):
     '''
 
     tracks = {
-        'monteverdi': 'sound/lagrime_16bit_PCM_compressed_2_to_1.wav'
+        'monteverdi': 'sound/lagrime_16bit_PCM_compressed_2_to_1.wav',
+        'table': 'sound/lagrime_16bit_PCM_compressed_2_to_1.wav',
+        'books': 'sound/lagrime_16bit_PCM_compressed_2_to_1.wav',
+        'art': 'sound/lagrime_16bit_PCM_compressed_2_to_1.wav'
     }
 
     def __init__(self):
