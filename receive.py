@@ -1,9 +1,10 @@
 #!/usr/bin/python3
 # mind@large raspi audio component
 # 11/24/17
-# updated: 12/13/17
+# updated: 1/4/18
 
 import yaml
+import socket
 import logging
 import logging.config
 import socketserver
@@ -31,7 +32,7 @@ class UDPHandler(socketserver.BaseRequestHandler):
         msg = self.decoded.split('/')
 
         try:
-            return {'track': msg[0], 'volume': float(msg[1])}
+            return {'host': msg[0], 'track': msg[1], 'volume': float(msg[2])}
         except IndexError:
             return None
 
@@ -49,8 +50,11 @@ class UDPHandler(socketserver.BaseRequestHandler):
         msg = self.parse_msg()
 
         if msg and msg['track'] in self.server.bmbx.sounds.keys():
-            self.server.logger.info('asking boombox to play "{}" at volume {}'.format(msg['track'], msg['volume']))
-            self.server.bmbx.play(msg['track'], msg['volume'])
+            if msg['host'] == self.server.hostname:
+                self.server.logger.info('asking boombox to play "{}" at volume {}'.format(msg['track'], msg['volume']))
+                self.server.bmbx.play(msg['track'], msg['volume'])
+            else:
+                self.server.logger.info('received valid command {}, but not addressed to me, ignoring...'.format(self.decoded))
         else:
             self.server.logger.warning("invalid command '{}' received, ignoring...".format(self.decoded))
 
@@ -78,7 +82,7 @@ class TCPHandler(socketserver.BaseRequestHandler):
         msg = self.decoded.split('/')
 
         try:
-            return {'track': msg[0], 'volume': float(msg[1])}
+            return {'host': msg[0], 'track': msg[1], 'volume': float(msg[2])}
         except IndexError:
             return None
 
@@ -87,8 +91,11 @@ class TCPHandler(socketserver.BaseRequestHandler):
         msg = self.parse_msg()
 
         if msg and msg['track'] in self.server.bmbx.sounds.keys():
-            self.server.logger.info('asking boombox to play "{}" at volume {}'.format(msg['track'], msg['volume']))
-            self.server.bmbx.play(msg['track'], msg['volume'])
+            if msg['host'] == self.server.hostname:
+                self.server.logger.info('asking boombox to play "{}" at volume {}'.format(msg['track'], msg['volume']))
+                self.server.bmbx.play(msg['track'], msg['volume'])
+            else:
+                self.server.logger.info('received valid command {}, but not addressed to me, ignoring...'.format(self.decoded))
         else:
             self.server.logger.warning("invalid command '{}' received, ignoring...".format(self.decoded))
 
@@ -120,7 +127,8 @@ class ReceiveAndPlay(object):
 
     def _initialize_server(self):
         hostport = ('', 9999)  # '' stands for all available interfaces
-        self.logger.info('initializing open {socket_type} server on port {port}'.format(socket_type=self.socket_type.upper(), port=hostport[1]))
+        hostname = socket.gethostname()
+        self.logger.info('host {hostname} initializing open {socket_type} server on port {port}'.format(hostname=hostname, socket_type=self.socket_type.upper(), port=hostport[1]))
 
         if self.socket_type == 'udp':
             server = socketserver.UDPServer(hostport, UDPHandler)
@@ -131,6 +139,7 @@ class ReceiveAndPlay(object):
             return None
 
         server.logger = self.logger
+        server.hostname = hostname
         server.bmbx = self.bmbx
 
         return server
