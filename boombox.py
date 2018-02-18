@@ -67,16 +67,16 @@ class Boombox(object):
             self.logger.info('playing sound "{}"'.format(sound))
             swnd.play(loops=-1)
 
-    def stop(self, sound):
+    def stop(self, sound, fadeout=1000):
         '''fades out sound over specified milliseconds'''
 
         self.logger.info('stopping playback of {}'.format(sound))
-        self.sounds[sound].fadeout(1000)
+        self.sounds[sound].fadeout(fadeout)
 
     def pause(self, channel):
         self.logger.info('pausing playback on {}'.format(channel))
         channel.pause()
 
-    def unpause(channel):
+    def resume(self, channel):
         self.logger.info('resuming playback on {}'.format(channel))
         channel.unpause()
