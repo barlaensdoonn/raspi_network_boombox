@@ -1,8 +1,8 @@
-#!/usr/bin/python3
-# mind@large raspi audio component
+# raspi network boombox
 # 11/24/17
-# updated: 12/22/17
+# updated: 2/21/18
 
+import os
 import yaml
 import logging
 import logging.config
@@ -10,33 +10,15 @@ from pygame import mixer
 
 
 class Boombox(object):
-    '''
-    there are 3 ways to handle starting/stopping sound playback in this case:
-
-    1. start playing all tracks in indefinite loops on initialization and
-       use mixer.Sound.set_volume() or mixer.Channel.set_volume() to modulate volume
-    2. start playback when trigger is received, modulate volume as above, then call
-       mixer.Channel.fadeout(ms) to stop sound and release the Channel when finished
-    3. start playback in an indefinite loop when first trigger is received, modulate
-       volume as in #1, and call mixer.Channel methods pause() or unpause() to start/stop
-
-    main difference is in #2 the track starts playing from the beginning the next time it is triggered,
-    whereas #1 is always looping regardless of volume, and #3 maintains state of the track's position
-    '''
-
-    tracks = {
-        'monteverdi': 'sound/lagrime_16bit_PCM_compressed_2_to_1.wav',
-        'table': 'sound/lagrime_16bit_PCM_compressed_2_to_1.wav',
-        'books': 'sound/lagrime_16bit_PCM_compressed_2_to_1.wav',
-        'art': 'sound/lagrime_16bit_PCM_compressed_2_to_1.wav'
-    }
+    '''audo files must be .ogg or .wav'''
 
     def __init__(self):
         self._initialize_logger()
         self.mixer = mixer
         self.mixer.init(frequency=44100)
-        self.sounds = {key: self.mixer.Sound(self.tracks[key]) for key in self.tracks.keys()}  # dict to hold mixer.Sounds in same format as tracks dict
-        self.logger.debug('pygame mixer and sounds dict initialized')
+        self.sound_path = 'sound/'
+        self.playables = self._get_playables()
+        self.sounds = {key[0:2]: self.mixer.Sound(self.playables[key]) for key in self.playables.keys()}
 
     def _initialize_logger(self):
         with open('log.yaml', 'r') as log_conf:
@@ -45,6 +27,16 @@ class Boombox(object):
         logging.config.dictConfig(log_config)
         self.logger = logging.getLogger('boombox')
         self.logger.info('boombox logger instantiated')
+
+    def _get_playables(self):
+        playables = {}
+
+        with os.scandir(self.sound_path) as sounds:
+            for sound in sounds:
+                if sound.name.endswith('.ogg') or sound.name.endswith('.wav'):
+                    playables[sound.name] = sound.path
+
+        return playables
 
     def _set_volume(self, sound, volume):
         '''volume should be between 0.0 - 1.0'''
