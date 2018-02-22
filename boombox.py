@@ -57,7 +57,7 @@ class Boombox(object):
 
         if not self._is_playing(swnd):
             self.logger.info('playing sound "{}"'.format(sound))
-            swnd.play(loops=-1)
+            swnd.play()
 
     def stop(self, sound, fadeout=1000):
         '''fades out sound over specified milliseconds'''
