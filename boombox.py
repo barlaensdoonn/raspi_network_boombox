@@ -1,6 +1,6 @@
 # raspi network boombox
 # 11/24/17
-# updated: 2/21/18
+# updated: 3/23/18
 
 import os
 import yaml
@@ -49,7 +49,7 @@ class Boombox(object):
 
         return sound_object.get_num_channels()
 
-    def play(self, sound, volume):
+    def play(self, sound, volume=1.0):
         '''set volume of the sound and play it if not playing already'''
 
         swnd = self.sounds[sound]
