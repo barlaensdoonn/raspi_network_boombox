@@ -59,6 +59,17 @@ class Boombox(object):
         self.logger.info('setting volume of sound "{}" to {}'.format(sound, volume))
         self.sounds[sound].set_volume(volume)
 
+    def _check_active_sounds(self):
+        '''
+        mixer.get_busy() returns 1 if any sounds are currently being mixed
+        it will return 1 even if the sound is paused
+        '''
+        if not self.mixer.get_busy():
+            self.logger.info('mixer has no active sound objects')
+            return False
+        else:
+            return True
+
     def play(self, sound, volume=1.0):
         '''set volume of the sound and play it if not playing already'''
 
@@ -88,8 +99,22 @@ class Boombox(object):
         channel.unpause()
 
     def pause_all(self):
-        '''pause all currently playing sounds'''
+        '''pause all currently playing sounds. if none are playing, do nothing'''
 
+        if self._check_active_sounds():
+            self.logger.info('pausing all sounds')
+            self.mixer.pause()
 
-        self.logger.info('pausing all sounds')
-        self.mixer.pause()
+    def resume_all(self):
+        '''resume all currently paused sounds. if none are paused, do nothing'''
+
+        if self._check_active_sounds():
+            self.logger.info('resuming all sounds')
+            self.mixer.unpause()
+
+    def stop_all(self, fadeout=1000):
+        '''stop playback of all currently playing sounds. if none are playing, do nothing'''
+
+        if self._check_active_sounds():
+            self.logger.info('stopping playback of all sounds')
+            self.mixer.fadeout(fadeout)
