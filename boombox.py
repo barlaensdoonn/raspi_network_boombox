@@ -12,13 +12,12 @@ from pygame import mixer
 class Boombox(object):
     '''audo files must be .ogg or .wav'''
 
-    def __init__(self):
+    def __init__(self, frequency=44100, channels=2):
         self._initialize_logger()
-        self.mixer = mixer
-        self.mixer.init(frequency=44100)
+        self.mixer = self._initialize_mixer(frequency=frequency, channels=channels)
         self.sound_path = 'sound/'
-        self.playables = self._get_playables()
-        self.sounds = {key[0:2]: self.mixer.Sound(self.playables[key]) for key in self.playables.keys()}
+        self.tracks = self._get_tracks()
+        self.sounds = {key[0:2]: self.mixer.Sound(self.tracks[key]) for key in self.tracks.keys()}
 
     def _initialize_logger(self):
         with open('log.yaml', 'r') as log_conf:
@@ -28,26 +27,37 @@ class Boombox(object):
         self.logger = logging.getLogger('boombox')
         self.logger.info('boombox logger instantiated')
 
-    def _get_playables(self):
-        playables = {}
+    def _initialize_mixer(self, frequency=44100, channels=2):
+        '''initialize pygame mixer. set channels=1 for mono'''
+
+        mixer.init(frequency=frequency, channels=channels)
+        return mixer
+
+    def _get_tracks(self):
+        '''
+        scans Boombox.sound_path and returns a dict of all audio files that end with .ogg or .wav
+        format of the dict is {'filename': 'path_to_file'}
+        '''
+
+        tracks = {}
 
         with os.scandir(self.sound_path) as sounds:
             for sound in sounds:
                 if sound.name.endswith('.ogg') or sound.name.endswith('.wav'):
-                    playables[sound.name] = sound.path
+                    tracks[sound.name] = sound.path
 
-        return playables
+        return tracks
+
+    def _is_playing(self, sound_object):
+        '''pygame method that returns # of channels sound is playing on'''
+
+        return sound_object.get_num_channels()
 
     def _set_volume(self, sound, volume):
         '''volume should be between 0.0 - 1.0'''
 
         self.logger.info('setting volume of sound "{}" to {}'.format(sound, volume))
         self.sounds[sound].set_volume(volume)
-
-    def _is_playing(self, sound_object):
-        '''pygame method that returns # of channels sound is playing on'''
-
-        return sound_object.get_num_channels()
 
     def play(self, sound, volume=1.0):
         '''set volume of the sound and play it if not playing already'''
@@ -66,9 +76,20 @@ class Boombox(object):
         self.sounds[sound].fadeout(fadeout)
 
     def pause(self, channel):
+        '''this method needs the channel object a sound is playing on rather than the sound object'''
+
         self.logger.info('pausing playback on {}'.format(channel))
         channel.pause()
 
     def resume(self, channel):
+        '''this method needs the channel object a sound is playing on rather than the sound object'''
+
         self.logger.info('resuming playback on {}'.format(channel))
         channel.unpause()
+
+    def pause_all(self):
+        '''pause all currently playing sounds'''
+
+
+        self.logger.info('pausing all sounds')
+        self.mixer.pause()
