@@ -10,17 +10,28 @@ from pygame import mixer
 
 
 class Boombox(object):
-    '''audo files must be .ogg or .wav'''
+    '''audo files must be .ogg or .wav, all other types will be ignored'''
+
+    sound_dir = 'sound/'
 
     def __init__(self, frequency=44100, channels=2):
         self._initialize_logger()
         self.mixer = self._initialize_mixer(frequency=frequency, channels=channels)
-        self.sound_path = 'sound/'
+        self.sound_path = os.path.join(self._get_basepath(), self.sound_dir)
         self.tracks = self._get_tracks()
         self.sounds = {key[0:2]: self.mixer.Sound(self.tracks[key]) for key in self.tracks.keys()}
 
+    def _get_basepath():
+        '''
+        this method of getting the script's basepath is needed
+        when running the script as a systemd service on the Pi
+        '''
+        return os.path.dirname(os.path.realpath(__file__))
+
     def _initialize_logger(self):
-        with open('log.yaml', 'r') as log_conf:
+        log_config = os.path.join(self._get_basepath(), 'log.yaml')
+
+        with open(log_config, 'r') as log_conf:
             log_config = yaml.safe_load(log_conf)
 
         logging.config.dictConfig(log_config)
