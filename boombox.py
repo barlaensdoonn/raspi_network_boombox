@@ -1,6 +1,6 @@
 # raspi network boombox
 # 11/24/17
-# updated: 3/23/18
+# updated: 6/7/18
 
 import os
 import yaml
@@ -40,7 +40,6 @@ class Boombox(object):
 
     def _initialize_mixer(self, frequency=44100, channels=2):
         '''initialize pygame mixer. set channels=1 for mono'''
-
         mixer.init(frequency=frequency, channels=channels)
         return mixer
 
@@ -49,7 +48,6 @@ class Boombox(object):
         scans Boombox.sound_path and returns a dict of all audio files that end with .ogg or .wav
         format of the dict is {'filename': 'path_to_file'}
         '''
-
         tracks = {}
 
         with os.scandir(self.sound_path) as sounds:
@@ -61,12 +59,10 @@ class Boombox(object):
 
     def _is_playing(self, sound_object):
         '''pygame method that returns # of channels sound is playing on'''
-
         return sound_object.get_num_channels()
 
     def _set_volume(self, sound, volume):
         '''volume should be between 0.0 - 1.0'''
-
         self.logger.info('setting volume of sound "{}" to {}'.format(sound, volume))
         self.sounds[sound].set_volume(volume)
 
@@ -83,7 +79,6 @@ class Boombox(object):
 
     def play(self, sound, volume=1.0):
         '''set volume of the sound and play it if not playing already'''
-
         swnd = self.sounds[sound]
         self._set_volume(sound, volume)
 
@@ -93,39 +88,33 @@ class Boombox(object):
 
     def stop(self, sound, fadeout=1000):
         '''fades out sound over specified milliseconds'''
-
         self.logger.info('stopping playback of {}'.format(sound))
         self.sounds[sound].fadeout(fadeout)
 
     def pause(self, channel):
         '''this method needs the channel object a sound is playing on rather than the sound object'''
-
         self.logger.info('pausing playback on {}'.format(channel))
         channel.pause()
 
     def resume(self, channel):
         '''this method needs the channel object a sound is playing on rather than the sound object'''
-
         self.logger.info('resuming playback on {}'.format(channel))
         channel.unpause()
 
     def pause_all(self):
         '''pause all currently playing sounds. if none are playing, do nothing'''
-
         if self._check_active_sounds():
             self.logger.info('pausing all sounds')
             self.mixer.pause()
 
     def resume_all(self):
         '''resume all currently paused sounds. if none are paused, do nothing'''
-
         if self._check_active_sounds():
             self.logger.info('resuming all sounds')
             self.mixer.unpause()
 
     def stop_all(self, fadeout=1000):
         '''stop playback of all currently playing sounds. if none are playing, do nothing'''
-
         if self._check_active_sounds():
             self.logger.info('stopping playback of all sounds')
             self.mixer.fadeout(fadeout)
