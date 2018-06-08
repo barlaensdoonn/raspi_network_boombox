@@ -1,13 +1,35 @@
 #!/usr/bin/python3
 # mind@large raspi audio component
 # 11/24/17
-# updated: 1/4/18
+# updated: 6/8/18
 
+import os
 import yaml
 import socket
 import logging
 import logging.config
 import socketserver
+
+
+def get_basepath():
+    '''
+    getting the script's basepath is needed when running the script
+    as a systemd service on the Pi
+    '''
+    return os.path.dirname(os.path.realpath(__file__))
+
+
+def initialize_logger():
+    config_path = os.path.join(get_basepath(), 'log.yaml')
+    with open(config_path, 'r') as log_conf:
+        log_config = yaml.safe_load(log_conf)
+
+    logging.config.dictConfig(log_config)
+    logger = logging.getLogger('main')
+    logger.info('* * * * * * * * * * * * * * * * * * * *')
+    logger.info('main logger instantiated')
+
+    return logger
 
 
 class UDPHandler(socketserver.BaseRequestHandler):
@@ -116,7 +138,8 @@ class ReceiveAndPlay(object):
         self.server = self._initialize_server()
 
     def _initialize_logger(self):
-        with open('log.yaml', 'r') as log_conf:
+        config_path = os.path.join(get_basepath(), 'log.yaml')
+        with open(config_path, 'r') as log_conf:
             log_config = yaml.safe_load(log_conf)
 
         logging.config.dictConfig(log_config)
