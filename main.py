@@ -49,7 +49,7 @@ if __name__ == '__main__':
 
     try:
         from Adafruit_MAX9744 import MAX9744
-        amp = initialize_amp(40)
+        amp = initialize_amp(55)
     except ImportError:
         logger.warning('Adafruit MAX9744 not installed, probably using a different amp')
     except OSError:
