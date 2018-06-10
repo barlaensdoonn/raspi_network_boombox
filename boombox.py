@@ -1,6 +1,6 @@
 # raspi network boombox
 # 11/24/17
-# updated: 6/7/18
+# updated: 6/10/18
 
 import os
 import yaml
@@ -84,14 +84,15 @@ class Boombox(object):
         else:
             return True
 
-    def play(self, sound, volume=1.0):
+    def play(self, sound, volume=1.0, loop=True):
         '''set volume of the sound and play it if not playing already'''
+        loops = 0 if not loop else -1
         swnd = self.sounds[sound]
         self._set_volume(sound, volume)
 
         if not self._is_playing(swnd):
             self.logger.info('playing sound "{}"'.format(sound))
-            swnd.play(loops=-1)
+            swnd.play(loops=loops)
 
     def stop(self, sound, fadeout=1000):
         '''fades out sound over specified milliseconds'''
